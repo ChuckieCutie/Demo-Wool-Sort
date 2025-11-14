@@ -6,14 +6,14 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [Header("Scene Refs")]
-    public ColorPeg[] allPegs;          // Các peg mục tiêu
-    public ColorPeg spawnColumn;        // Cột spawn (stackPoint của nó dùng để xếp ring)
+    public ColorPeg[] allPegs;        
+    public ColorPeg spawnColumn;       
 
     [Header("Prefabs")]
     public WoolRing ringPrefab;
 
     [Header("Settings")]
-    public int ringsPerColor = 4;       // số vòng mỗi màu
+    public int ringsPerColor = 4;       
 
     Dictionary<int, ColorPeg> pegByColor;
 
@@ -34,7 +34,6 @@ public class GameManager : MonoBehaviour
         SpawnRingsStackedRandomOnSpawnColumn();
     }
 
-    // ⭐ Spawn thẳng hàng trên cột SpawnColumn theo kiểu xếp chồng, nhưng màu bị random
     void SpawnRingsStackedRandomOnSpawnColumn()
     {
         if (ringPrefab == null || spawnColumn == null)
@@ -43,7 +42,6 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // 1) Tạo danh sách tất cả colorID cần spawn
         List<int> ringColors = new List<int>();
 
         foreach (var peg in allPegs)
@@ -52,26 +50,23 @@ public class GameManager : MonoBehaviour
                 ringColors.Add(peg.colorID);
         }
 
-        // 2) Shuffle màu
         for (int i = 0; i < ringColors.Count; i++)
         {
             int rand = Random.Range(0, ringColors.Count);
             (ringColors[i], ringColors[rand]) = (ringColors[rand], ringColors[i]);
         }
 
-        // 3) Spawn theo thứ tự random, nhưng xếp đúng stackPosition
         foreach (int colorID in ringColors)
         {
-            Vector3 pos = spawnColumn.GetNextStackPosition(); // ⭐ thẳng hàng
+            Vector3 pos = spawnColumn.GetNextStackPosition(); 
 
             WoolRing ring = Instantiate(ringPrefab, pos, Quaternion.identity);
 
-            ring.SetColor(colorID); // gán màu
+            ring.SetColor(colorID); 
             ring.transform.SetParent(spawnColumn.stackPoint, worldPositionStays: true);
         }
     }
 
-    // ⭐ Sort — giữ nguyên
     public void SortRing(WoolRing ring)
     {
         if (!pegByColor.TryGetValue(ring.colorID, out var peg)) return;

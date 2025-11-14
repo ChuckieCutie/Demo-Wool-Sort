@@ -4,10 +4,9 @@ using UnityEngine;
 public class WoolRing : MonoBehaviour
 {
     [Header("Ring setup")]
-    public int colorID;                     // ID màu
-    public MeshRenderer rend;              // Renderer của ring
-    public Material[] colorMaterials;      // Mảng material, index = colorID
-
+    public int colorID;                   
+    public MeshRenderer rend;             
+    public Material[] colorMaterials;      
     [Header("Movement")]
     public float liftHeight = 1.2f;
     public float moveSpeed  = 5f;
@@ -16,7 +15,7 @@ public class WoolRing : MonoBehaviour
 
     void Start()
     {
-        ApplyColor();                      // Lúc mới spawn thì tự gán material theo ID hiện tại
+        ApplyColor();                      
     }
 
     void OnMouseDown()
@@ -25,14 +24,12 @@ public class WoolRing : MonoBehaviour
         GameManager.Instance.SortRing(this);
     }
 
-    // Hàm để set màu từ code (GameManager gọi)
     public void SetColor(int id)
     {
         colorID = id;
         ApplyColor();
     }
 
-    // Gán material theo colorID
     public void ApplyColor()
     {
         if (rend == null || colorMaterials == null || colorMaterials.Length == 0)
@@ -63,11 +60,8 @@ public class WoolRing : MonoBehaviour
         Vector3 up  = start + Vector3.up * liftHeight;
         Vector3 mid = new Vector3(end.x, up.y, end.z);
 
-        // đi lên
         yield return MoveStep(up);
-        // đi ngang
         yield return MoveStep(mid);
-        // hạ xuống
         yield return MoveStep(end);
 
         transform.SetParent(peg.stackPoint, worldPositionStays: true);
